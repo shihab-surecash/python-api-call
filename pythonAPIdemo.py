@@ -2,29 +2,28 @@ import requests
 import json
 import csv
 
-api_url = "https://jsonplaceholder.typicode.com/todos"
-reader = csv.DictReader(open("D:/Python API calling/pythonAPIdata.csv"))   
 
-for row in reader:
-        response = requests.post(api_url, json=row)
-        print(response.text)
+def post_todo():
+	api_url = "https://jsonplaceholder.typicode.com/todos"
+	reader = csv.DictReader(open("D:/Python API calling/pythonAPIdata.csv"))   
 
+	for row in reader:
+	        try:
+	        	response = requests.post(api_url, json=row)
+	        	response.raise_for_status()
 
+	        except requests.exceptions.RequestException as e:
+	        	raise SystemExit(e)	
 
+	        print(response.text)
 
-# with open('D:/Python API calling/pythonAPIdata.csv','rt')as f:
-#   data = csv.reader(f)
-#   next(data)  #skipping header part of CSV
-#   for row in data:
-#         response = requests.post(api_url, json=row)
-#         print(response)
+	        response_time = response.elapsed.total_seconds() * 1000
+	        if(response_time > 950):
+	        	print ("RESPONSE DELAY !!! response time is " + str(response_time) + " ms which exceeds maximum response time 950 ms")
+	        else:
+	        	print("response time is " + str(response_time) + " ms which is below maximum response time 950 ms")	
+	        
 
-# parameters = {
-#     "lat": 40.71,
-#     "lon": -74
-# }
+post_todo()
 
-# response = requests.get("https://api.open-notify.org/iss-pass.json", params=parameters)
-
-# print(response.json)
 
